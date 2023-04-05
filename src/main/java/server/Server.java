@@ -9,6 +9,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner
 
 public class Server {
 
@@ -91,7 +94,50 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-        // TODO: implémenter cette méthode
+        List mesCours = new ArrayList();
+        try {
+          File mesCours = new File("cours.txt");
+          Scanner lecture = new Scanner(mesCours);
+          while (lecture.hasNextLine()) {
+            String data = lecture.nextLine();
+            }
+          lecture.close();
+        } catch (FileNotFoundException x) {
+          System.out.printIn("Une erreure s'est produite.");
+          e.printStackTrace();
+        }
+        // Fonction de comparaison pour le trie les cours selon la session
+        public int getId() {
+        return categorie;  
+        }
+        @Override
+        public int compareTo( Cours CeCours ) {
+        return this.categorie - CeCours.categorie;
+        }
+        // Trier les cours par session
+        Collections.sort( toutLesCours );
+        
+        try {
+          Socket clientSocket = new Socket("127.0.0.1", 1337);
+          OutputStreamWriter os = new OutputStreamWriter(
+              clientSocket.getOutputStream()
+    
+          BufferedWriter writer = new BufferedWriter(os);
+          Scanner scanner = new Scanner(System.in);
+          while(scanner.hasNext()) {
+              String line = scanner.nextLine();
+              return (!!!!)
+              //System.out.println("Envoi de : " + line);
+              //writer.append(line + "\n");
+              // Vider le buffer : envoyer la requête tout de suite
+              writer.flush();
+          }
+          writer.close();
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+
+
     }
 
     /**
