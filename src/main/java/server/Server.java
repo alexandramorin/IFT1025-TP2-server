@@ -94,7 +94,7 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-    class toutlesCours implements Comparable<toutLesCours> {
+    class cours implements Comparable<toutLesCours> {
         String codeDuCours;  // Code du cours 
         String nom;  // Nom du cours
         String session // saison de la session
@@ -102,32 +102,33 @@ public class Server {
         // Fonction de comparaison pour le trie des héros
         public int getId() {
             return session;
-    }
-    @Override
-    public int compareTo( Hero CeHero ) {
-      return this.categorie - CeHero.categorie;
-    }
-        List toutLesCours = new ArrayList();
+        }
+        @Override
+        public int compareTo( cours ceCours ) {
+        return this.session.compareTo(ceCours.session);
+        }
+        public cours ( String codeDuCours, String nom, String session) {
+            this.codeDuCours = codeDuCours;
+            this.nom = nom;
+            this.session = session;
+        }
+        
+        List<cours> toutLesCours = new ArrayList();
         try {
           File mesCours = new File("cours.txt");
           Scanner lecture = new Scanner(mesCours);
           while (lecture.hasNextLine()) {
             String data = lecture.nextLine();
             String[] champsDeCours = data.split("\t", 3);
+            cours ceCours = new cours(champDeCours[0], champDeCours[1], champDeCours[2]);
+            toutLesCours.add(ceCours);
             }
           lecture.close();
         } catch (FileNotFoundException x) {
           System.out.printIn("Une erreure s'est produite.");
           e.printStackTrace();
         }
-        // Fonction de comparaison pour le trie les cours selon la session
-        public int getId() {
-        return categorie;  
-        }
-        @Override
-        public int compareTo( Cours CeCours ) {
-        return this.categorie - CeCours.categorie;
-        }
+       
         // Trier les cours par session
         Collections.sort( toutLesCours );
         
