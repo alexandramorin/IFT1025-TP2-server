@@ -94,12 +94,26 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
+    class toutlesCours implements Comparable<toutLesCours> {
+        String codeDuCours;  // Code du cours 
+        String nom;  // Nom du cours
+        String session // saison de la session
+
+        // Fonction de comparaison pour le trie des héros
+        public int getId() {
+            return session;
+    }
+    @Override
+    public int compareTo( Hero CeHero ) {
+      return this.categorie - CeHero.categorie;
+    }
         List toutLesCours = new ArrayList();
         try {
           File mesCours = new File("cours.txt");
           Scanner lecture = new Scanner(mesCours);
           while (lecture.hasNextLine()) {
             String data = lecture.nextLine();
+            String[] champsDeCours = data.split("\t", 3);
             }
           lecture.close();
         } catch (FileNotFoundException x) {
