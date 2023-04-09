@@ -94,7 +94,7 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-        List mesCours = new ArrayList();
+        List toutLesCours = new ArrayList();
         try {
           File mesCours = new File("cours.txt");
           Scanner lecture = new Scanner(mesCours);
