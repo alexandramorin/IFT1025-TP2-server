@@ -2,16 +2,10 @@ package server;
 
 import javafx.util.Pair;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner
+import java.util.*;
 
 public class Server {
 
@@ -94,40 +88,43 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-    class cours implements Comparable<toutLesCours> {
-        String codeDuCours;  // Code du cours 
-        String nom;  // Nom du cours
-        String session // saison de la session
+        class cours implements Comparable<cours> {
+            String codeDuCours;  // Code du cours
+            String nom;  // Nom du cours
+            String session; // saison de la session
 
-        // Fonction de comparaison pour le trie des héros
-        public int getId() {
-            return session;
-        }
-        @Override
-        public int compareTo( cours ceCours ) {
-        return this.session.compareTo(ceCours.session);
-        }
-        public cours ( String codeDuCours, String nom, String session) {
-            this.codeDuCours = codeDuCours;
-            this.nom = nom;
-            this.session = session;
+            // Fonction de comparaison pour le trie des héros
+            //public int getId() {
+            //    return session;
+            //}
+
+            @Override
+            public int compareTo(cours ceCours) {
+                return this.session.compareTo(ceCours.session);
+            }
+
+            public cours(String codeDuCours, String nom, String session) {
+                this.codeDuCours = codeDuCours;
+                this.nom = nom;
+                this.session = session;
+            }
         }
         
-        List<cours> toutLesCours = new ArrayList();
-        try {
-          File mesCours = new File("cours.txt");
-          Scanner lecture = new Scanner(mesCours);
-          while (lecture.hasNextLine()) {
-            String data = lecture.nextLine();
-            String[] champsDeCours = data.split("\t", 3);
-            cours ceCours = new cours(champDeCours[0], champDeCours[1], champDeCours[2]);
-            toutLesCours.add(ceCours);
+        List<cours> toutLesCours = new ArrayList<cours>();
+
+            try {
+            File mesCours = new File("cours.txt");
+            Scanner lecture = new Scanner(mesCours);
+            while (lecture.hasNextLine()) {
+                String data = lecture.nextLine();
+                String[] champsDeCours = data.split("\t", 3);
+                cours ceCours = new cours(champsDeCours[0], champsDeCours[1], champsDeCours[2]);
+                toutLesCours.add(ceCours);
+                }
+            lecture.close();
+            } catch (FileNotFoundException x) {
+                System.out.println("Une erreure s'est produite.");
             }
-          lecture.close();
-        } catch (FileNotFoundException x) {
-          System.out.printIn("Une erreure s'est produite.");
-          e.printStackTrace();
-        }
        
         // Trier les cours par session
         Collections.sort( toutLesCours );
@@ -135,16 +132,12 @@ public class Server {
         try {
           Socket clientSocket = new Socket("127.0.0.1", 1337);
           OutputStreamWriter os = new OutputStreamWriter(
-              clientSocket.getOutputStream()
+              clientSocket.getOutputStream());
     
           BufferedWriter writer = new BufferedWriter(os);
           Scanner scanner = new Scanner(System.in);
           while(scanner.hasNext()) {
               String line = scanner.nextLine();
-              return (!!!!)
-              //System.out.println("Envoi de : " + line);
-              //writer.append(line + "\n");
-              // Vider le buffer : envoyer la requête tout de suite
               writer.flush();
           }
           writer.close();
@@ -161,7 +154,7 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-        // TODO: implémenter cette méthode
+
     }
 }
 
