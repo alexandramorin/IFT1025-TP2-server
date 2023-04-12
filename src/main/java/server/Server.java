@@ -112,38 +112,50 @@ public class Server {
         
         List<cours> toutLesCours = new ArrayList<cours>();
 
-            try {
-            File mesCours = new File("cours.txt");
+        try {
+            File mesCours = new File("C:\\Users\\alexa\\IdeaProjects\\IFT1025-TP2-server\\src\\main\\java\\server\\data\\cours.txt");
             Scanner lecture = new Scanner(mesCours);
             while (lecture.hasNextLine()) {
                 String data = lecture.nextLine();
+                System.out.println( "Data = " + data);
                 String[] champsDeCours = data.split("\t", 3);
                 cours ceCours = new cours(champsDeCours[0], champsDeCours[1], champsDeCours[2]);
                 toutLesCours.add(ceCours);
                 }
             lecture.close();
-            } catch (FileNotFoundException x) {
-                System.out.println("Une erreure s'est produite.");
-            }
+        } catch (FileNotFoundException x) {
+            System.out.println("Une erreur s'est produite.");
+        }
        
         // Trier les cours par session
         Collections.sort( toutLesCours );
-        
+
         try {
-          Socket clientSocket = new Socket("127.0.0.1", 1337);
-          OutputStreamWriter os = new OutputStreamWriter(
-              clientSocket.getOutputStream());
-    
-          BufferedWriter writer = new BufferedWriter(os);
-          Scanner scanner = new Scanner(System.in);
-          while(scanner.hasNext()) {
-              String line = scanner.nextLine();
-              writer.flush();
-          }
-          writer.close();
-        } catch (IOException ex) {
-          ex.printStackTrace();
+            for (int j = 0; j < toutLesCours.size(); j++) {
+                System.out.println( toutLesCours.get(j).codeDuCours );
+                objectOutputStream.writeObject(toutLesCours.get(j).codeDuCours);
+                objectOutputStream.writeObject(toutLesCours.get(j).nom);
+                objectOutputStream.writeObject(toutLesCours.get(j).session);
+                objectOutputStream.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//        try {
+ //         Socket clientSocket = new Socket("127.0.0.1", 1337);
+   //       OutputStreamWriter os = new OutputStreamWriter(
+     //         clientSocket.getOutputStream());
+    //
+      //    BufferedWriter writer = new BufferedWriter(os);
+        //  Scanner scanner = new Scanner(System.in);
+          //while(scanner.hasNext()) {
+//              String line = scanner.nextLine();
+  //            writer.flush();
+    //      }
+      //    writer.close();
+        //} catch (IOException ex) {
+//          ex.printStackTrace();
+  //      }
 
 
     }
