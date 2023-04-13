@@ -100,7 +100,7 @@ public class cli {
   String rien = keyboard.nextLine(); 
   String codeDuCours = keyboard.nextLine();
 
-  System.out.println( "F'licitations! Inscription reussie de " + Prenom + " au cours " + codeDuCours );
+  System.out.println( "Félicitations! Inscription réussie de " + Prenom + " au cours " + codeDuCours );
 
 }
 }
