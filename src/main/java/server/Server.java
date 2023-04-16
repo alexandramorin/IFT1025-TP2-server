@@ -141,9 +141,6 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     /**
@@ -152,7 +149,15 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-
+      System.out.println( "HandleRegistration");
+      try {
+          String Reg = objectInputStream.readObject().toString();
+          System.out.println( " Registre: " + Reg );
+          objectOutputStream.writeObject( "OK" );
+      }
+      catch( Exception e) {
+          System.out.println( "Inputstream problem");
+      }
     }
 }
 
