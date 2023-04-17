@@ -141,6 +141,9 @@ public class cli {
     } 
     fromServer.close();
     toServer.close();
+    /**
+    * Impression de message félicitant le client de son inscription au cours choisi
+    */
     System.out.println( "Félicitations! Inscription reussie de " + Prenom + " au cours " + codeDuCours );
   } catch( IOException e ) {
     System.out.println( " Exception ici" );
