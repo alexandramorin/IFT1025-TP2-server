@@ -1,25 +1,33 @@
+/** 
+* @author Alexandra Morin
+* @version 1.0
+* @since 17-04-2023
+*/
 package program;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
+/**
+* Cette méthode est le coté client du programme
+*/
 public class cli {
 
   public static void main(String[] args) {
-    List<String> code = new ArrayList<String>();
-    List<String> nom = new ArrayList<String>();
-    List<String> session = new ArrayList<String>();
+    List<String> code = new ArrayList<String>(); // nouvelle liste pour le code des cours (ex: IFT1025)
+    List<String> nom = new ArrayList<String>(); // nouvelle liste pour le nom des cours (ex: Programmation 2)
+    List<String> session = new ArrayList<String>(); // nouvelle liste pour la session où le cours se donne (ex: Hiver)
 
     // IO streams
     try {
       ObjectOutputStream toServer = null;
       ObjectInputStream fromServer = null;
 
-      // Create a socket to connect to the server
+      // Création d'un socket pour connecter au serveur
       Socket socket = new Socket("localhost", 1337);
 
-      // Create an input stream to receive data from the server
+      // Création d'un flux d’entrée to recevoir les données du serveur
       toServer = new ObjectOutputStream(socket.getOutputStream());
       fromServer = new ObjectInputStream(socket.getInputStream());
 
@@ -35,14 +43,24 @@ public class cli {
              nom.add( fromServer.readObject().toString());
              session.add( fromServer.readObject().toString());
           } 
+        /**
+        * Si la classe n'est pas trouver, un avertissement est envoyé
+        */
         } catch( ClassNotFoundException e ) {
           System.out.println("Erreur" ); 
         }
+      /**
+      * S'il y a une erreur, on interrompt le programme
+      */
       } catch (IOException e) {
         Thread.currentThread().interrupt();
       }
 
       Scanner keyboard = new Scanner(System.in);
+      /**
+      * Création de l'application pour que les clients puissent choisir leurs cours
+      * Débutent par la session qu'ils/elles desirent, par la suite, les cours offert cette session et l'inscription au cours
+      */
       while( true ) {
         System.out.println( "*** Bienvenue au portail d'inscription de cours de l'UDEM ***" );
         System.out.println( "Veuillez choisir la session pour laquelle vous voulez consulter la liste des cours" );
@@ -80,6 +98,10 @@ public class cli {
        }
       break;
     }
+      
+    /**
+    * Le client entre ses données personnelle pour s'inscrire au cours qu'il/elle desire
+    */
     System.out.print( "Veuillez saisir votre prenom: " );  
     String Prenom = keyboard.nextLine();
 
@@ -96,8 +118,8 @@ public class cli {
     String rien = keyboard.nextLine(); 
     String codeDuCours = keyboard.nextLine();
 
-    // Create an input stream to receive data from the server
-    // Create a socket to connect to the server
+    // Création à nouveau d'un socket pour connecter au serveur
+    // Création à nouveau d'un flux d’entrée to recevoir les données du serveur
     Socket socket1 = new Socket("localhost", 1337);
     toServer = new ObjectOutputStream(socket1.getOutputStream());
     fromServer = new ObjectInputStream(socket1.getInputStream());
