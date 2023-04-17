@@ -12,10 +12,10 @@
 * Le premier try a pour but de lire le fichier cours.txt, de séparer les donnes en 3 champs (@see codeDuCours, nom et prenom) et 
 * d'ajouter les cours dans le document dans la variable approprié 
 * @see variable ceCours dans la variable toutLesCours
-* @exception si le document n'est pas trouver, il faut envoyer un avertissement
+* @throws si le document n'est pas trouver, il faut envoyer un avertissement
 * Le deuxième try a pour but 
 * @see codeDuCours, nom et prenom dans la variable toutLesCours
-* @exception si il y a un problème, on indique la ligne où se situe le problème
+* @throws si il y a un problème, on indique la ligne où se situe le problème
 * @return Une liste des cours trier entre les differentes sessions (automne, hiver et printemps) 
 */
 public void handleLoadCourses(String arg) {
@@ -23,11 +23,6 @@ public void handleLoadCourses(String arg) {
             String codeDuCours;  // Code du cours
             String nom;  // Nom du cours
             String session; // saison de la session
-
-            // Fonction de comparaison pour le trie des héros
-            //public int getId() {
-            //    return session;
-            //}
 
             @Override
             public int compareTo(cours ceCours) {
@@ -77,7 +72,7 @@ public void handleLoadCourses(String arg) {
 * Cette méthode enregistre les inscriptions en fonctions des cours choisis.
 * Le try lit l'objet et le transforme en string pour l'imprimer.
 * Il confirme aussi l'enregistrement 
-* @exception imprime un avertissement pour aviser du problème
+* @throws imprime un avertissement pour aviser du problème
 */
 public void handleRegistration() {
       try {
