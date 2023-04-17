@@ -93,11 +93,6 @@ public class Server {
             String nom;  // Nom du cours
             String session; // saison de la session
 
-            // Fonction de comparaison pour le trie des héros
-            //public int getId() {
-            //    return session;
-            //}
-
             @Override
             public int compareTo(cours ceCours) {
                 return this.session.compareTo(ceCours.session);
@@ -149,7 +144,6 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-      System.out.println( "HandleRegistration");
       try {
           String Reg = objectInputStream.readObject().toString();
           System.out.println( " Registre: " + Reg );
