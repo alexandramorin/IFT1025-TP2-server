@@ -28,29 +28,20 @@ public class cli {
       try {
         byte[] b = new byte[100];
 
-        //System.out.println( "Sleep 1" );
-        //Thread.sleep(1000);
         String line;
         try {
           while(( line = fromServer.readObject().toString()) != null ) {
-             System.out.println( "ReadObject" );
              code.add(line);
              nom.add( fromServer.readObject().toString());
              session.add( fromServer.readObject().toString());
           } 
-          System.out.println("Tout lue"); 
         } catch( ClassNotFoundException e ) {
-          System.out.println(" Poute" ); 
+          System.out.println("Erreur" ); 
         }
-        System.out.println( "Catchinggg.");
       } catch (IOException e) {
-//      } catch (InterruptedException e) {
-        System.out.println( "Exception" );
         Thread.currentThread().interrupt();
       }
-      System.out.println( "Catching.");
 
-      System.out.println( "Scanning..." );
       Scanner keyboard = new Scanner(System.in);
       while( true ) {
         System.out.println( "*** Bienvenue au portail d'inscription de cours de l'UDEM ***" );
@@ -128,7 +119,7 @@ public class cli {
     } 
     fromServer.close();
     toServer.close();
-    System.out.println( "F'licitations! Inscription reussie de " + Prenom + " au cours " + codeDuCours );
+    System.out.println( "Félicitations! Inscription reussie de " + Prenom + " au cours " + codeDuCours );
   } catch( IOException e ) {
     System.out.println( " Exception ici" );
   }
