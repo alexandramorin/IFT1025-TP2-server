@@ -1,5 +1,5 @@
 /** 
-* @author Alexandra Morin
+* @author Alexandra Morin 20236038
 * @version 1.0
 * @since 17-04-2023
 */
@@ -27,12 +27,13 @@ public class cli {
       // Création d'un socket pour connecter au serveur
       Socket socket = new Socket("localhost", 1337);
 
-      // Création d'un flux d’entrée to recevoir les données du serveur
+      // Création d'un flux d’entrée pour recevoir les données du serveur
       toServer = new ObjectOutputStream(socket.getOutputStream());
       fromServer = new ObjectInputStream(socket.getInputStream());
 
       String lecture = "CHARGER Moi";
       toServer.writeObject(lecture);
+      // Recois la réponse du serveur.
       try {
         byte[] b = new byte[100];
 
@@ -44,7 +45,7 @@ public class cli {
              session.add( fromServer.readObject().toString());
           } 
         /**
-        * Si la classe n'est pas trouver, un avertissement est envoyé
+        * Si la classe n'est pas trouvé, un avertissement est envoyé
         */
         } catch( ClassNotFoundException e ) {
           System.out.println("Erreur" ); 
@@ -59,7 +60,7 @@ public class cli {
       Scanner keyboard = new Scanner(System.in);
       /**
       * Création de l'application pour que les clients puissent choisir leurs cours
-      * Débutent par la session qu'ils/elles desirent, par la suite, les cours offert cette session et l'inscription au cours
+      * débutant par la session qu'ils/elles desirent, par la suite, les cours offert cette session et l'inscription au cours
       */
       while( true ) {
         System.out.println( "*** Bienvenue au portail d'inscription de cours de l'UDEM ***" );
@@ -88,7 +89,7 @@ public class cli {
        System.out.print("> Choix: ");
        int Choix3 = keyboard.nextInt() - 1;
 
-       System.out.println( "1. Consulter les cours oofferts pour una autre session" );
+       System.out.println( "1. Consulter les cours offerts pour una autre session" );
        System.out.println( "2. Inscription a un cours" );
        System.out.print( "> Choix: " );
        int Choix4 = keyboard.nextInt() - 1;
@@ -100,7 +101,7 @@ public class cli {
     }
       
     /**
-    * Le client entre ses données personnelle pour s'inscrire au cours qu'il/elle desire
+    * Le client entre ses données personnelles pour s'inscrire au cours qu'il/elle desire
     */
     System.out.print( "Veuillez saisir votre prenom: " );  
     String Prenom = keyboard.nextLine();
@@ -119,21 +120,25 @@ public class cli {
     String codeDuCours = keyboard.nextLine();
 
     // Création à nouveau d'un socket pour connecter au serveur
-    // Création à nouveau d'un flux d’entrée to recevoir les données du serveur
+    // Création à nouveau d'un flux d’entrée pour recevoir les données du serveur
     Socket socket1 = new Socket("localhost", 1337);
     toServer = new ObjectOutputStream(socket1.getOutputStream());
     fromServer = new ObjectInputStream(socket1.getInputStream());
 
+    // Envoie de l'inscription au serveur.
     String Inscrire = "INSCRIRE";
     toServer.writeObject( Inscrire ); 
     toServer.writeObject( Prenom + " " + Nom + " " + Courriel + " " + matricule + " " + codeDuCours );
     System.out.println( "Envoie complete" );
     toServer.flush();
 
+    // Donne du temps au serveur pour accomplir sa tâche.
     try {
       Thread.sleep(1000);
     } catch ( Exception e ) {
     }
+    
+    // Attend le OK du serveur.
     try {
       System.out.println( fromServer.readObject().toString()  );
     } catch (ClassNotFoundException e) {
@@ -144,7 +149,7 @@ public class cli {
     /**
     * Impression de message félicitant le client de son inscription au cours choisi
     */
-    System.out.println( "Félicitations! Inscription reussie de " + Prenom + " au cours " + codeDuCours );
+    System.out.println( "Félicitations! Inscription réussie de " + Prenom + " au cours " + codeDuCours );
   } catch( IOException e ) {
     System.out.println( " Exception ici" );
   }
