@@ -1,5 +1,5 @@
 /** 
-* @author Alexandra Morin
+* @author Alexandra Morin 20236038
 * @version 1.0
 * @since 17-04-2023
 */
@@ -64,7 +64,7 @@ public class Main extends Application {
                  session.add( fromServer.readObject().toString());
               } 
             /**
-            * Si la classe n'est pas trouver, un avertissement est envoyé
+            * Si la classe n'est pas trouvée, un avertissement est envoyé
             */
             } catch( ClassNotFoundException e ) {
               System.out.println("Erreur" ); 
@@ -88,7 +88,7 @@ public class Main extends Application {
 
      	Button btn = new Button();
         btn.setText("Charger");
-	    btn.setOnAction(new EventHandler<ActionEvent>() {
+	btn.setOnAction(new EventHandler<ActionEvent>() {
 
           @Override
           public void handle(ActionEvent event) {
@@ -187,10 +187,8 @@ public class Main extends Application {
            catch( IOException e) {
         	 System.out.println( "Socket ?");
            }
-              
           }
         });
-
         
         vbox2.getChildren().addAll(lbName2, hboxPrenom, hboxNom, hboxCourriel, hboxMatricule, envoyer);
            
@@ -200,16 +198,13 @@ public class Main extends Application {
  
         hbox.getChildren().addAll(vbox, vbox2);
         root.getChildren().add(hbox);
-        Scene scene = new Scene(root, 500, 300); // the stack pane is the root node
-
-        
+        Scene scene = new Scene(root, 500, 300);
         primaryStage.setTitle("Inscription UdeM" );
         primaryStage.setScene(scene);
         primaryStage.show();
     }
     
     public static void main(String[] args) {
-
         launch(args);
     }
 }
