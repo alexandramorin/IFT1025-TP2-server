@@ -1,3 +1,8 @@
+/** 
+* @author Alexandra Morin
+* @version 1.0
+* @since 17-04-2023
+*/
 package application;
 	
 
@@ -13,41 +18,105 @@ import javafx.scene.control.*;
 import javafx.scene.shape.VLineTo; 
 import javafx.scene.shape.MoveTo; 
 import javafx.scene.shape.Path;   
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        StackPane root = new StackPane();
+        List<String> code = new ArrayList<String>(); // nouvelle liste pour le code des cours (ex: IFT1025)
+        List<String> nom = new ArrayList<String>(); // nouvelle liste pour le nom des cours (ex: Programmation 2)
+        List<String> session = new ArrayList<String>(); // nouvelle liste pour la session où le cours se donne (ex: Hiver)
+        ChoiceBox<Object> choiceBox = new ChoiceBox<Object>();
+        ListView<String> listView = new ListView<String>();
+        ObservableList<String> list = FXCollections.observableArrayList();
+
+    	// IO streams
+        try {
+          ObjectOutputStream toServer = null;
+          ObjectInputStream fromServer = null;
+
+          // Création d'un socket pour connecter au serveur
+          Socket socket = new Socket("localhost", 1337);
+
+          // Création d'un flux d’entrée to recevoir les données du serveur
+          toServer = new ObjectOutputStream(socket.getOutputStream());
+          fromServer = new ObjectInputStream(socket.getInputStream());
+
+          String lecture = "CHARGER Moi";
+          toServer.writeObject(lecture);
+          try {
+            byte[] b = new byte[100];
+
+            String line;
+            try {
+              while(( line = fromServer.readObject().toString()) != null ) {
+                 code.add(line);
+                 nom.add( fromServer.readObject().toString());
+                 session.add( fromServer.readObject().toString());
+              } 
+            /**
+            * Si la classe n'est pas trouver, un avertissement est envoyé
+            */
+            } catch( ClassNotFoundException e ) {
+              System.out.println("Erreur" ); 
+            }
+          /**
+          * S'il y a une erreur, on interrompt le programme
+          */
+          } catch (IOException e) {
+            Thread.currentThread().interrupt();
+          }
+        } catch( Exception e ) {
+        	System.out.println( "Oops, le serveur n'est pas en fonction !");
+        }
+        List<String>Saison = new ArrayList<String>();
+        for( int i = 0; i < code.size(); i++ ) {
+          Saison.add( session.get(i) );
+        }
+        List<String> SaisonSansDoublon = new ArrayList<>( new HashSet<>(Saison));
+
+    	StackPane root = new StackPane();
 
      	Button btn = new Button();
         btn.setText("Charger");
-	    //btn.setTranslateX( 100 );
-	    //btn.setTranslateY(40);
 	    btn.setOnAction(new EventHandler<ActionEvent>() {
 
           @Override
           public void handle(ActionEvent event) {
-            System.out.println("CHARGER");
+              listView.setItems(list);
+              listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+              list.clear();
+              for( int i = 0; i < session.size(); i++ )  {
+                if ( session.get(i).equals( choiceBox.getSelectionModel().getSelectedItem() ))  {
+                  list.add( code.get(i) + " " + nom.get(i) );
+                }
+              }       
           }
         });
-	    root.getChildren().add(btn);
-        
+
         HBox hbox = new HBox(30); // create a HBox to hold 2 vboxes        
          
         // create a vbox with a textarea that grows vertically
-        VBox vbox = new VBox(10);        
+        VBox vbox = new VBox(20);        
         Label lbName = new Label("Liste des cours");
-        TextArea textArea = new TextArea();
-        textArea.setPrefWidth(100);
-        VBox.setVgrow(textArea, Priority.ALWAYS);        
-        vbox.getChildren().addAll(lbName, textArea);
-         
+        /* Creating a choice box with default constructor */
+        choiceBox.getItems().add(SaisonSansDoublon.get(0));
+        choiceBox.getItems().add(SaisonSansDoublon.get(1));
+        choiceBox.getItems().add(SaisonSansDoublon.get(2));
+
+        vbox.getChildren().addAll(lbName, listView, choiceBox, btn);
+
+        
         // create a vbox that grows horizontally inside the hbox
         VBox vbox2 = new VBox(10);        
         Label lbName2 = new Label("Formulaire d'inscription");
@@ -55,16 +124,68 @@ public class Main extends Application {
         HBox hboxPrenom = new HBox( 10 );
         TextField Prenom = new TextField();
         Label LblPrenom = new Label( "Prenom");
-        Prenom.setPromptText("Prenom");
         hboxPrenom.getChildren().addAll( LblPrenom, Prenom );
         
+        HBox hboxNom = new HBox( 10 );
         TextField Nom = new TextField();
+        Label LblNom = new Label( "Nom");
+        hboxNom.getChildren().addAll( LblNom, Nom );
+        
+        HBox hboxCourriel = new HBox( 10 );
         TextField Courriel = new TextField();
+        Label LblCourriel = new Label( "Courriel");
+        hboxCourriel.getChildren().addAll( LblCourriel, Courriel );
+
+        HBox hboxMatricule = new HBox( 10 );
         TextField Matricule = new TextField();
-        Nom.setPromptText("Nom");
-        Courriel.setPromptText("Courriel");
-        Matricule.setPromptText("Matricule");
-        vbox2.getChildren().addAll(lbName2, LblPrenom, Prenom, Nom, Courriel, Matricule);
+        Label LblMatricule = new Label( "Matricule");
+        hboxMatricule.getChildren().addAll( LblMatricule, Matricule );
+
+        Button envoyer = new Button();
+        envoyer.setText("Envoyer");
+	    envoyer.setOnAction(new EventHandler<ActionEvent>() {
+
+          @Override
+          public void handle(ActionEvent event) {
+            ObjectOutputStream toServer = null;
+            ObjectInputStream fromServer = null;
+        	
+            String Envoie = Prenom.getText() + " " + Nom.getText() + " " + Courriel.getText() + " " + Matricule.getText();
+            // Create an input stream to receive data from the server
+            // Create a socket to connect to the server
+            try {
+	            Socket socket1 = new Socket("localhost", 1337);
+	            toServer = new ObjectOutputStream(socket1.getOutputStream());
+	            fromServer = new ObjectInputStream(socket1.getInputStream());
+	
+	            String Inscrire = "INSCRIRE";
+	            toServer.writeObject( Inscrire ); 
+	            toServer.writeObject( Envoie );
+	            System.out.println( "Envoie complete" );
+	            toServer.flush();
+	
+	            try {
+	              Thread.sleep(1000);
+	            } catch ( Exception e ) {
+	            }
+	            try {
+	              System.out.println( fromServer.readObject().toString()  );
+	            } catch (ClassNotFoundException e) {
+	              System.out.println( "Exception" ); 
+	            } 
+	            socket1.close();
+	            fromServer.close();
+	            toServer.close();
+            }
+           catch( IOException e) {
+        	 System.out.println( "Socket ?");
+           }
+              
+          }
+        });
+
+        
+        vbox2.getChildren().addAll(lbName2, hboxPrenom, hboxNom, hboxCourriel, hboxMatricule, envoyer);
            
         HBox.setHgrow(vbox2, Priority.ALWAYS);
  
@@ -76,79 +197,14 @@ public class Main extends Application {
         root.getChildren().add(hbox);
         Scene scene = new Scene(root, 500, 300); // the stack pane is the root node
 
-        /* Creating a choice box with default constructor */
-        ChoiceBox<Object> choiceBox = new ChoiceBox<Object>();
-        choiceBox.getItems().add("Printemps");
-        choiceBox.getItems().add("Automne");
-        choiceBox.getItems().add("Hiver");
-
-        choiceBox.setTranslateY(40);      
-        /* Creating a tile pane for adding choice box */
-        root.getChildren().add(choiceBox);
         
         primaryStage.setTitle("Inscription UdeM" );
         primaryStage.setScene(scene);
         primaryStage.show();
-    	
-//    	Button btn = new Button();
-//        btn.setText("Charger");
-//        btn.setTranslateX( 100 );
-//        btn.setTranslateY(40);
-//        btn.setOnAction(new EventHandler<ActionEvent>() {
-//
-//            @Override
-//            public void handle(ActionEvent event) {
-//                System.out.println("CHARGER");
-//            }
-//        });
-//
-//        StackPane root = new StackPane();
-//        root.getChildren().add(btn);
-//        
-//        ListView<String> listViewReference = new ListView<String>();
-//        /* adding items to the list view */
-//        listViewReference.getItems().add("First Item");
-//        listViewReference.getItems().add("Second Item");
-//        listViewReference.getItems().add("Third Item");
-//        listViewReference.getItems().add("Fourth Item");
-//        listViewReference.getItems().add("Fifth Item");
-//        /* creating vertical box to add item objects */
-//        VBox vBox = new VBox(listViewReference); 
-//        /* creating scene */
-//        Scene List = new Scene(vBox, 220, 270);
-//        
-//        Scene scene = new Scene(root, 300, 250);
-//
-//        primaryStage.setTitle("Inscription UdeM" );
-//        
-//        
-//        /* Creating a choice box with default constructor */
-//        ChoiceBox<Object> choiceBox = new ChoiceBox<Object>();
-//        choiceBox.getItems().add("Printemps");
-//        choiceBox.getItems().add("Automne");
-//        choiceBox.getItems().add("Hiver");
-//
-//        choiceBox.setTranslateY(40);      
-//        /* Creating a tile pane for adding choice box */
-//        root.getChildren().add(choiceBox);
-//        
-//        Separator separator = new Separator();
-//        separator.setOrientation(Orientation.VERTICAL);
-//        
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
-//        
-//        //VBox root2 = new VBox();     
-//
-//        //Path path = new Path();
-//        //path.getElements().add(new MoveTo(100f, 100f));
-//        //path.getElements().add(new VLineTo(100f));
-//
-//        //root2.getChildren().addAll(path);
-//        //scene.setRoot(root2);
-
     }
+    
     public static void main(String[] args) {
+
         launch(args);
     }
 }
