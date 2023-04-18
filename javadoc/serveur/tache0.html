@@ -58,7 +58,6 @@ public void handleLoadCourses(String arg) {
 
         try {
             for (int j = 0; j < toutLesCours.size(); j++) {
-                System.out.println( toutLesCours.get(j).codeDuCours );
                 objectOutputStream.writeObject(toutLesCours.get(j).codeDuCours);
                 objectOutputStream.writeObject(toutLesCours.get(j).nom);
                 objectOutputStream.writeObject(toutLesCours.get(j).session);
