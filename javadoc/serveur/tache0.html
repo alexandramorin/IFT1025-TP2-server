@@ -1,5 +1,5 @@
 /** 
-* @author Alexandra Morin
+* @author Alexandra Morin 20236038
 * @version 1.0
 * @since 17-04-2023
 *
@@ -9,7 +9,7 @@
 * La méthode compareTo @param les les cours et le cours qu'on compare @return les cours trier par session
 * La méthode cours @param le code du cours, le nom et la session des cours dans la liste 
 * Elle associe le code, nom et session à la variable qui le convient
-* Le premier try a pour but de lire le fichier cours.txt, de séparer les donnes en 3 champs (@see codeDuCours, nom et prenom) et 
+* Le premier try a pour but de lire le fichier cours.txt, de séparer les données en 3 champs (@see codeDuCours, nom et prenom) et 
 * d'ajouter les cours dans le document dans la variable approprié 
 * @see variable ceCours dans la variable toutLesCours
 * @throws si le document n'est pas trouver, il faut envoyer un avertissement
@@ -76,7 +76,9 @@ public void handleLoadCourses(String arg) {
 public void handleRegistration() {
       try {
           String Reg = objectInputStream.readObject().toString();
-          System.out.println( " Registre: " + Reg );
+          PrintWriter out = new PrintWriter("EtudiantEtCours.txt");
+          out.println( Reg );
+          out.close();
           objectOutputStream.writeObject( "OK" );
       }
       catch( Exception e) {
