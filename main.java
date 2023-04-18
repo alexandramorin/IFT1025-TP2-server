@@ -39,7 +39,7 @@ public class Main extends Application {
         ListView<String> listView = new ListView<String>();
         ObservableList<String> list = FXCollections.observableArrayList();
 
-    	// IO streams
+    	// IO flux d'entrée
         try {
           ObjectOutputStream toServer = null;
           ObjectInputStream fromServer = null;
@@ -105,8 +105,10 @@ public class Main extends Application {
         });
 
         HBox hbox = new HBox(30); // create a HBox to hold 2 vboxes        
-         
-        // create a vbox with a textarea that grows vertically
+        
+	/**
+	* Création d'une vbox avec texte vertical
+	*/
         VBox vbox = new VBox(20);        
         Label lbName = new Label("Liste des cours");
         /* Creating a choice box with default constructor */
@@ -116,8 +118,9 @@ public class Main extends Application {
 
         vbox.getChildren().addAll(lbName, listView, choiceBox, btn);
 
-        
-        // create a vbox that grows horizontally inside the hbox
+        /**
+	* Création d'une vbox horizontal 
+	*/
         VBox vbox2 = new VBox(10);        
         Label lbName2 = new Label("Formulaire d'inscription");
         
@@ -151,10 +154,14 @@ public class Main extends Application {
             ObjectInputStream fromServer = null;
         	
             String Envoie = Prenom.getText() + " " + Nom.getText() + " " + Courriel.getText() + " " + Matricule.getText();
-            // Create an input stream to receive data from the server
-            // Create a socket to connect to the server
             try {
-	            Socket socket1 = new Socket("localhost", 1337);
+	            /*
+		    * Création d'un socket pour connecter au serveur
+		    */
+		    Socket socket1 = new Socket("localhost", 1337);
+		    /*
+		    * Création d'un socket pour connecter au serveur
+		    */
 	            toServer = new ObjectOutputStream(socket1.getOutputStream());
 	            fromServer = new ObjectInputStream(socket1.getInputStream());
 	
@@ -189,9 +196,7 @@ public class Main extends Application {
            
         HBox.setHgrow(vbox2, Priority.ALWAYS);
  
-        // the next two lines behave equally - try to comment the first line out and use the 2nd line
         hbox.setPadding(new Insets(20));
-//        StackPane.setMargin(hbox, new Insets(20));
  
         hbox.getChildren().addAll(vbox, vbox2);
         root.getChildren().add(hbox);
