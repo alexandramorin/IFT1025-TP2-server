@@ -128,7 +128,7 @@ public class Server {
         * Si on ne parvient pas à trouver le fichier la fonction catch nous avertissera de l'erreur
         */
         try {
-            File mesCours = new File("C:\\Users\\alexa\\IdeaProjects\\IFT1025-TP2-server\\src\\main\\java\\server\\data\\cours.txt");
+            File mesCours = new File("src\\main\\java\\server\\data\\cours.txt");
             Scanner lecture = new Scanner(mesCours);
             while (lecture.hasNextLine()) {
                 String data = lecture.nextLine();
