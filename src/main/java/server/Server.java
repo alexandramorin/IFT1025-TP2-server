@@ -1,3 +1,8 @@
+/** 
+* @author Alexandra Morin
+* @version 1.0
+* @since 17-04-2023
+*/
 package server;
 
 import javafx.util.Pair;
@@ -7,6 +12,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+/** 
+* Création du serveur 
+*/
 public class Server {
 
     public final static String REGISTER_COMMAND = "INSCRIRE";
@@ -89,31 +97,38 @@ public class Server {
      */
     public void handleLoadCourses(String arg) {
         class cours implements Comparable<cours> {
-            String codeDuCours;  // Code du cours
-            String nom;  // Nom du cours
-            String session; // saison de la session
+            String codeDuCours;  // Code du cours (ex: IFT1025)
+            String nom;  // Nom du cours (ex: Programmation 2)
+            String session; // Session dont le cours se donne (ex: Hiver)
 
-            // Fonction de comparaison pour le trie des héros
-            //public int getId() {
-            //    return session;
-            //}
-
+            /**
+            * Compares la session du cours qu'il analyse avec les autre
+            */
             @Override
             public int compareTo(cours ceCours) {
                 return this.session.compareTo(ceCours.session);
             }
-
+            
+            /**
+            * Associe le code du cours, nom et prenom du cours offert avec les variables approprié
+            */
             public cours(String codeDuCours, String nom, String session) {
-                this.codeDuCours = codeDuCours;
-                this.nom = nom;
+                this.codeDuCours = codeDuCours; 
+                this.nom = nom; 
                 this.session = session;
             }
         }
-        
+        /**
+        * Création de la liste des cours
+        */
         List<cours> toutLesCours = new ArrayList<cours>();
 
+        /**
+        * Cette méthode try/catch permet de lire le fichier cours.txt, séparer les données en 3 champs et placé l'information dans une liste
+        * Si on ne parvient pas à trouver le fichier la fonction catch nous avertissera de l'erreur
+        */
         try {
-            File mesCours = new File("C:\\Users\\alexa\\IdeaProjects\\IFT1025-TP2-server\\src\\main\\java\\server\\data\\cours.txt");
+            File mesCours = new File("src\\main\\java\\server\\data\\cours.txt");
             Scanner lecture = new Scanner(mesCours);
             while (lecture.hasNextLine()) {
                 String data = lecture.nextLine();
@@ -129,10 +144,12 @@ public class Server {
        
         // Trier les cours par session
         Collections.sort( toutLesCours );
-
+        
+        /**
+        * Cette méthode try/catch permet d`envoyer le cours/nom/session au client.
+        */
         try {
             for (int j = 0; j < toutLesCours.size(); j++) {
-                System.out.println( toutLesCours.get(j).codeDuCours );
                 objectOutputStream.writeObject(toutLesCours.get(j).codeDuCours);
                 objectOutputStream.writeObject(toutLesCours.get(j).nom);
                 objectOutputStream.writeObject(toutLesCours.get(j).session);
@@ -149,15 +166,15 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-      System.out.println( "HandleRegistration");
       try {
           String Reg = objectInputStream.readObject().toString();
-          System.out.println( " Registre: " + Reg );
-          objectOutputStream.writeObject( "OK" );
+          PrintWriter out = new PrintWriter("EtudiantEtCours.txt");
+          out.println( Reg );
+          out.close();
+          objectOutputStream.writeObject( "OK" ); // confirmation de l'enregistrement
       }
       catch( Exception e) {
           System.out.println( "Inputstream problem");
       }
     }
 }
-

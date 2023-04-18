@@ -1,13 +1,88 @@
-/**
-Cette méthode donne la liste de cours.
-@param arg la session pour laquelle on veut récupérer la liste des cours
+/** 
+* @author Alexandra Morin 20236038
+* @version 1.0
+* @since 17-04-2023
+*
+* Cette méthode donne la liste de cours.
+* @param arg la session pour laquelle on veut récupérer la liste des cours
+* Cours est l'entité utiliser majoritairement pour comparer les differents cours @see comparable
+* La méthode compareTo @param les les cours et le cours qu'on compare @return les cours trier par session
+* La méthode cours @param le code du cours, le nom et la session des cours dans la liste 
+* Elle associe le code, nom et session à la variable qui le convient
+* Le premier try a pour but de lire le fichier cours.txt, de séparer les données en 3 champs (@see codeDuCours, nom et prenom) et 
+* d'ajouter les cours dans le document dans la variable approprié 
+* @see variable ceCours dans la variable toutLesCours
+* @throws si le document n'est pas trouver, il faut envoyer un avertissement
+* Le deuxième try a pour but d`envoyer le cours/nom/session au client.
+* @see codeDuCours, nom et prenom dans la variable toutLesCours
+* @throws si il y a un problème, on indique la ligne où se situe le problème
+* @return Une liste des cours trier entre les differentes sessions (automne, hiver et printemps) 
 */
 public void handleLoadCourses(String arg) {
-// TODO: implémenter cette méthode
+        class cours implements Comparable<cours> {
+            String codeDuCours;  // Code du cours
+            String nom;  // Nom du cours
+            String session; // saison de la session
+
+            @Override
+            public int compareTo(cours ceCours) {
+                return this.session.compareTo(ceCours.session);
+            }
+
+            public cours(String codeDuCours, String nom, String session) {
+                this.codeDuCours = codeDuCours;
+                this.nom = nom;
+                this.session = session;
+            }
+        }
+        
+        List<cours> toutLesCours = new ArrayList<cours>();
+
+        try {
+            File mesCours = new File("C:\\Users\\alexa\\IdeaProjects\\IFT1025-TP2-server\\src\\main\\java\\server\\data\\cours.txt");
+            Scanner lecture = new Scanner(mesCours);
+            while (lecture.hasNextLine()) {
+                String data = lecture.nextLine();
+                System.out.println( "Data = " + data);
+                String[] champsDeCours = data.split("\t", 3);
+                cours ceCours = new cours(champsDeCours[0], champsDeCours[1], champsDeCours[2]);
+                toutLesCours.add(ceCours);
+                }
+            lecture.close();
+        } catch (FileNotFoundException x) {
+            System.out.println("Une erreur s'est produite.");
+        }
+       
+        // Trier les cours par session
+        Collections.sort( toutLesCours );
+
+        try {
+            for (int j = 0; j < toutLesCours.size(); j++) {
+                objectOutputStream.writeObject(toutLesCours.get(j).codeDuCours);
+                objectOutputStream.writeObject(toutLesCours.get(j).nom);
+                objectOutputStream.writeObject(toutLesCours.get(j).session);
+                objectOutputStream.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 /**
-Cette méthode enregistre les inscriptions en fonctions des cours choisis.
+* Cette méthode enregistre les inscriptions en fonctions des cours choisis.
+* Le try lit l'objet et le transforme en string pour l'imprimer.
+* Il confirme aussi l'enregistrement 
+* @throws imprime un avertissement pour aviser du problème
 */
 public void handleRegistration() {
-// TODO: implémenter cette méthode
+      try {
+          String Reg = objectInputStream.readObject().toString();
+          PrintWriter out = new PrintWriter("EtudiantEtCours.txt");
+          out.println( Reg );
+          out.close();
+          objectOutputStream.writeObject( "OK" );
+      }
+      catch( Exception e) {
+          System.out.println( "Inputstream problem");
+      }
+    }
 }
