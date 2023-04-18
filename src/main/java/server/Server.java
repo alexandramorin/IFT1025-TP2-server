@@ -146,11 +146,10 @@ public class Server {
         Collections.sort( toutLesCours );
         
         /**
-        * Cette méthode try/catch permet de 
+        * Cette méthode try/catch permet d`envoyer le cours/nom/session au client.
         */
         try {
             for (int j = 0; j < toutLesCours.size(); j++) {
-                System.out.println( toutLesCours.get(j).codeDuCours );
                 objectOutputStream.writeObject(toutLesCours.get(j).codeDuCours);
                 objectOutputStream.writeObject(toutLesCours.get(j).nom);
                 objectOutputStream.writeObject(toutLesCours.get(j).session);
@@ -169,7 +168,9 @@ public class Server {
     public void handleRegistration() {
       try {
           String Reg = objectInputStream.readObject().toString();
-          System.out.println( " Registre: " + Reg );
+          PrintWriter out = new PrintWriter("EtudiantEtCours.txt");
+          out.println( Reg );
+          out.close();
           objectOutputStream.writeObject( "OK" ); // confirmation de l'enregistrement
       }
       catch( Exception e) {
